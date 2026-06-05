@@ -1,0 +1,17 @@
+*
+!private/
+!public/
+!.gitignore
+.env
+/vendor
+/storage/app/private/*
+/storage/app/public/*
+/storage/framework/*
+/storage/logs/*
+/node_modules
+.DS_Store
+Thumbs.db
+!/Storage/app/private/.gitignore
+!/Storage/app/public/.gitignore
+!/Storage/framework/.gitignore
+!/Storage/logs/.gitignore

@@ -1,0 +1,54 @@
+services:
+  # 1. Base de Datos (PostgreSQL)
+  postgres-db:
+    image: postgres:15-alpine
+    container_name: bdp-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: bolsa_contratos
+      POSTGRES_USER: jose_admin
+      POSTGRES_PASSWORD: secret_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - bdp-network
+
+  # 2. Servicio Externo (Python)
+  python-service:
+    build:
+      context: ./python-service
+    container_name: bdp-python-service
+    restart: always
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./python-service:/app
+    networks:
+      - bdp-network
+
+  # 3. Aplicación Principal (Laravel API)
+  laravel-api:
+    build:
+      context: ./laravel-api
+      dockerfile: Dockerfile
+    container_name: bdp-laravel-api
+    restart: always
+    ports:
+      - "8080:80"
+    volumes:
+      - ./laravel-api:/var/www/html
+    depends_on:
+      - postgres-db
+      - python-service
+    networks:
+      - bdp-network
+    user: "1000:1000"
+
+networks:
+  bdp-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
